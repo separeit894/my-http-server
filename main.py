@@ -11,6 +11,8 @@ def index():
 def upload_file():
     if request.method == "POST":
         file = request.files.get("file")
+        if not os.path.exists("uploads"):
+            os.mkdir("uploads")
         file.save(f"uploads/{file.filename}")
         return render_template("index.html")
 
