@@ -1,30 +1,40 @@
-from flask import Flask, request, render_template, send_file
+from flask import Flask, request, render_template, send_file, redirect, url_for
 import os
 
 app = Flask(__name__)
 
+UPLOADS_DIR = "uploads"
+
 @app.route("/")
 def index():
-    return render_template("index.html")
+    data = os.listdir(UPLOADS_DIR)
+    return render_template("index.html", data=data)
 
-@app.route("/upload", methods=["POST"])
+@app.route("/upload", methods=["POST", "GET"])
 def upload_file():
     if request.method == "POST":
         file = request.files.get("file")
-        if not os.path.exists("uploads"):
-            os.mkdir("uploads")
-        file.save(f"uploads/{file.filename}")
-        return render_template("index.html")
+        if not os.path.exists(UPLOADS_DIR):
+            os.mkdir(UPLOADS_DIR)
+        else:
+            path = UPLOADS_DIR + "/" + file.filename
+            file.save(path)
 
-@app.route("/list")
-def list_files():
-    data = os.listdir("uploads/")
-    return render_template("list.html", data=data)
+    return redirect("/")
 
 
-@app.route("/uploads/<string:file>")
+@app.route("/get_file/<string:file>")
 def get_file(file):
-    if os.path.exists(f"uploads/{file}"):
-        return send_file(f"uploads/{file}", as_attachment=False)
+    path = UPLOADS_DIR + "/" + file
+    if os.path.exists(path):
+        return send_file(path, as_attachment=False)
+
+@app.route("/delete/<string:filename>")
+def delete_file(filename):
+    path = UPLOADS_DIR + "/" + filename
+    if os.path.exists(path):
+        os.remove(path)
+    return redirect("/")
+    
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

@@ -1,0 +1,37 @@
+#text-list-files {
+    text-align: center; 
+    font-size: xx-large; 
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.file,
+.delete-button {
+    font-size: x-large; 
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration-line: none; 
+    color: #000;
+}
+
+.file a {
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration-line: none; 
+    color: #000;
+    display: inline;
+}
+
+.delete-button  {
+    font-size: large;
+    background-color: White;
+    color: black;
+    border: 2px solid darkgray;
+    border-radius: 4px;
+    padding: 3px
+}
+
+.file:hover {
+    color: black;
+}
+
+.delete-button:hover  {
+    color: black;
+}

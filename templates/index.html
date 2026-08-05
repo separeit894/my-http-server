@@ -5,9 +5,16 @@
 {% endblock title %}
 
 {% block body %}
+<h1 id="text-list-files">Список файлов</h1><hr>
+{% for el in data %}
+    <div class="file">
+        <a href="get_file/{{ el }}">{{ el }}</a>
+        <a href="/delete/{{ el }}" class="delete-button" >Удалить</a>
+    </div>
+{% endfor %}
+<br><hr>
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" id="file" name="file" required><br>
+    <input type="file" style="margin-bottom: 2%;" id="file" name="file" required><br>
     <button type="submit">Отправить файл</button>
 </form><br>
-<button type="button"><a href="/list">Список файлов</a></button>
 {% endblock body %}
