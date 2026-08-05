@@ -1,4 +1,4 @@
-uploads/*
 uploads
 .vscode
 venv
+zip_archive
