@@ -35,3 +35,12 @@
 .delete-button:hover  {
     color: black;
 }
+
+#link_download_zip {
+    color: black;
+    text-decoration-line: none;
+}
+
+#link-main-page {
+    text-decoration: none;
+}

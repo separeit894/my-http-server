@@ -19,7 +19,7 @@
     <button type="submit">Отправить файл</button>
 </form><br>
 <form action="/create-zip-archive" method="post">
-<button id="check_checkbox" type="button"><a href="/get-zip-archive/{{ zipfile }}">Получить файлы (ZIP)</a></button>
+<button id="check_checkbox" type="button"><a id="link_download_zip" href="/get-zip-archive/{{ zipfile }}">Получить файлы (ZIP)</a></button>
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </form>
 {% endblock body %}
