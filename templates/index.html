@@ -8,6 +8,7 @@
 <h1 id="text-list-files">Список файлов</h1><hr>
 {% for el in data %}
     <div class="file">
+        <input type="checkbox" name="{{ el }}" class="files">
         <a href="get_file/{{ el }}">{{ el }}</a>
         <a href="/delete/{{ el }}" class="delete-button" >Удалить</a>
     </div>
@@ -17,4 +18,8 @@
     <input type="file" style="margin-bottom: 2%;" id="file" name="file" required><br>
     <button type="submit">Отправить файл</button>
 </form><br>
+<form action="/create-zip-archive" method="post">
+<button id="check_checkbox" type="button"><a href="/get-zip-archive/{{ zipfile }}">Получить файлы (ZIP)</a></button>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</form>
 {% endblock body %}
