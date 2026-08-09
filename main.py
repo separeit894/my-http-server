@@ -14,6 +14,7 @@ from zipfile import ZipFile
 
 import os
 import time
+import json
 
 
 app = Flask(__name__)
@@ -28,6 +29,7 @@ ZIP_ARCHIVE_DIR = "zip_archive"
 
 # Files
 ZIP_FILENAME = "files.zip"
+CONFIG_JSON = "config.json"
 
 # FULL PATH 
 FULL_PATH_ZIPFILE = os.path.join(ZIP_ARCHIVE_DIR, ZIP_FILENAME)
@@ -40,8 +42,38 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
+VERSION = "0.0.8"
 
-VERSION = "0.0.7"
+
+def create_config_json():
+    if not os.path.exists(CONFIG_JSON):
+        try:
+            with open("config.json", "w", encoding="utf-8") as file:
+                dict_config = {
+                    "Security": [],
+                    "Allowed Types": []
+                }
+                json.dump(dict_config, file, indent=4)
+                print(f"[ FILE CONFIG CREATE ] : {file.name}")
+
+                return True
+            
+        except json.JSONEncoder as error:
+            print(error)
+            return False
+    else:
+        print(f"[ FILE CONFIG EXISTS ] : {CONFIG_JSON}")
+        return True
+
+def read_config_json():
+    with open(CONFIG_JSON, "r", encoding="utf-8") as file:
+        dict_config_json = json.load(file)
+        return dict_config_json
+
+def write_data_to_config_json(dict_config):
+    with open(CONFIG_JSON, "w", encoding="utf-8") as file:
+        json.dump(dict_config, file, indent=4)
+        return True
 
 
 @app.route("/")
@@ -51,7 +83,7 @@ def index():
     if os.path.exists(FULL_PATH_ZIPFILE):
         os.remove(FULL_PATH_ZIPFILE)
 
-    return render_template("index.html", data=data, version=f"version: {VERSION}", zipfile=ZIP_FILENAME)
+    return render_template("index.html", data=data, version=f"version: {VERSION}", zipfile=ZIP_FILENAME, dict=read_config_json()["Security"])
 
 
 @app.route("/upload", methods=["POST", "GET"])
@@ -74,8 +106,19 @@ def get_file(file):
 @app.route("/delete/<string:filename>")
 def delete_file(filename):
     path = os.path.join(UPLOADS_DIR, filename)
-    if os.path.exists(path):
-        os.remove(path)
+
+    dict_config_json = read_config_json()
+    security_list = dict_config_json["Security"]
+
+    if filename in security_list:
+        security_list.remove(filename)
+        print("[ REMOVE FILE FROM SECURITY LIST IN CONFIG ]")
+        return redirect("/")
+        
+    else:
+        if os.path.exists(path):
+            os.remove(path)
+        print("[ DELETE THIS FILE, THAT'S NOT EXISTS IN SECURITY LIST ]")
 
     return redirect("/")
 
@@ -105,7 +148,6 @@ def create_zip_archive():
                     print(f"File not founded : {src_path}")
 
             myzip.close()
-            # start_create_zip = False
             created_zip = True
             print(f"[ CREATE ZIP FILE ] : created_zip : {created_zip}")
 
@@ -138,6 +180,23 @@ def get_zip_archive():
         return send_file(FULL_PATH_ZIPFILE, as_attachment=False, download_name=ZIP_FILENAME)
     else:
         return redirect("/")
+
+@app.route("/security-file", methods=["POST"])
+def security_file():
+    if request.method == "POST":
+        result = request.get_json()
+        if create_config_json():
+            dict_config_json = read_config_json()
+            for item in result:
+                if item in dict_config_json["Security"]:
+                    print(f"[ ITEM EXISTS IN LIST, THAT`S NOT APPEND IN LIST ] : {item}")
+                else:
+                    print(f"[ ITEM APPEND IN LIST ] : {item}")
+                    dict_config_json["Security"].append(item)
+            write_data_to_config_json(dict_config_json)
+
+        return redirect("/")
+
     
 
 @app.errorhandler(404)

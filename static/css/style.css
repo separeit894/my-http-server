@@ -44,3 +44,8 @@
 #link-main-page {
     text-decoration: none;
 }
+
+.forms {
+    display: inline-block;  
+    margin: 5px
+}

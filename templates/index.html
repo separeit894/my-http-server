@@ -10,16 +10,22 @@
     <div class="file">
         <input type="checkbox" name="{{ el }}" class="files">
         <a href="get_file/{{ el }}">{{ el }}</a>
-        <a href="/delete/{{ el }}" class="delete-button" >Удалить</a>
+        {% if not el in dict %}
+            <a href="/delete/{{ el }}" class="delete-button" >Удалить</a>
+        {% endif %}
     </div>
 {% endfor %}
 <br><hr>
-<form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" style="margin-bottom: 2%;" id="file" name="file" required><br>
+<form class="forms" action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" style="margin-bottom: 2%;" id="file" name="file" required>
     <button type="submit">Отправить файл</button>
-</form><br>
-<form action="/create-zip-archive" method="post">
-<button id="check_checkbox" type="button" onclick="get_zip_archive()"><a id="link_download_zip">Получить файлы (ZIP)</a></button>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</form>
+<form class="forms" action="/create-zip-archive" method="post">
+    <button id="create_zip_archive" type="button" onclick="get_zip_archive()"><a id="link_download_zip">Получить файлы (ZIP)</a></button>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</form>
+<form class="forms">
+    <button id="securityFile" title="Убирает возможность удалить файл" onclick="securityFile()">Защита файла</button>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </form>
 {% endblock body %}

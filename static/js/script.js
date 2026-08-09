@@ -14,6 +14,12 @@ async function send_files(url, result) {
     }
 }
 
+async function create_zip_archive() {
+    const result = check_checkbox()
+    const url = "/create-zip-archive"
+    send_files(url, result)
+}
+
 function check_checkbox() {
     result = []
     const checkbox_class_elements = document.getElementsByClassName("files");
@@ -29,8 +35,7 @@ function check_checkbox() {
         return;
     } 
     console.log("result: ", result)
-    send_files("/create-zip-archive", result)
-    
+    return result
 
 }
 
@@ -42,4 +47,12 @@ async function get_zip_archive() {
     )
 }
 
-document.getElementById("check_checkbox").addEventListener('click', check_checkbox);
+async function securityFile() {
+    const result = check_checkbox()
+    const url = "/security-file"
+    send_files(url, result)
+
+}
+
+document.getElementById("create_zip_archive").addEventListener('click', create_zip_archive);
+document.getElementById("securityFile").addEventListener('click', securityFile);
