@@ -2,3 +2,4 @@ uploads
 .vscode
 venv
 zip_archive
+config.json
