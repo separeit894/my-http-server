@@ -34,4 +34,12 @@ function check_checkbox() {
 
 }
 
+async function get_zip_archive() {
+    setTimeout(() => {
+        window.location.href="/get-zip-archive"
+    }, 
+    2000
+    )
+}
+
 document.getElementById("check_checkbox").addEventListener('click', check_checkbox);

@@ -33,14 +33,15 @@ ZIP_FILENAME = "files.zip"
 FULL_PATH_ZIPFILE = os.path.join(ZIP_ARCHIVE_DIR, ZIP_FILENAME)
 
 # if create zip, return file to download
-create_zip = False
+start_create_zip = False
+created_zip = False
 
 # Make dirs if not exists
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
 
-VERSION = "0.0.6"
+VERSION = "0.0.7"
 
 
 @app.route("/")
@@ -81,7 +82,7 @@ def delete_file(filename):
 
 @app.route("/create-zip-archive", methods=["POST"])
 def create_zip_archive():
-    global create_zip
+    global start_create_zip, created_zip
 
     if request.method == "POST":    
         result = request.get_json()
@@ -90,7 +91,9 @@ def create_zip_archive():
             print(f"[ DELETE ] File exists: {FULL_PATH_ZIPFILE}... Delete file")
             os.remove(FULL_PATH_ZIPFILE)
 
-        create_zip = False
+        start_create_zip = True
+        print(f"[ START CREATE ZIP ] : {start_create_zip}")
+        created_zip = False
 
         with ZipFile(FULL_PATH_ZIPFILE, "w") as myzip:
             print(result)
@@ -102,8 +105,9 @@ def create_zip_archive():
                     print(f"File not founded : {src_path}")
 
             myzip.close()
-            create_zip = True
-            print(f"[ CREATE ZIP FILE ] : create_zip : {create_zip}")
+            # start_create_zip = False
+            created_zip = True
+            print(f"[ CREATE ZIP FILE ] : created_zip : {created_zip}")
 
         return send_file(FULL_PATH_ZIPFILE, as_attachment=True, download_name=ZIP_FILENAME)
     else:
@@ -112,12 +116,7 @@ def create_zip_archive():
 
 @app.route("/get-zip-archive", methods=['GET', 'POST'])
 def get_zip_archive():
-    while not create_zip:
-        time.sleep(2)
-        print(f"[ VARIABLE CREATE_ZIP ] : {create_zip}")
-        if create_zip:
-            break
-
+    global start_create_zip
 
     @after_this_request
     def delete_zip_file(response):
@@ -126,11 +125,20 @@ def get_zip_archive():
             os.remove(FULL_PATH_ZIPFILE)
 
         return response
+    print(f"NOW : {start_create_zip}")
+    if start_create_zip:
+        while not created_zip:
+            time.sleep(2)
+            print(f"[ VARIABLE CREATED_ZIP ] : {created_zip}")
+            if created_zip:
+                break
 
-    try:
+        start_create_zip = False
+
         return send_file(FULL_PATH_ZIPFILE, as_attachment=False, download_name=ZIP_FILENAME)
-    except FileNotFoundError:
-        return jsonify({"status": "error"})
+    else:
+        return redirect("/")
+    
 
 @app.errorhandler(404)
 def error_page(error):
