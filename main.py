@@ -42,7 +42,7 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-VERSION = "0.0.8"
+VERSION = "0.0.9"
 
 
 def create_config_json():
@@ -66,9 +66,12 @@ def create_config_json():
         return True
 
 def read_config_json():
-    with open(CONFIG_JSON, "r", encoding="utf-8") as file:
-        dict_config_json = json.load(file)
-        return dict_config_json
+    try:
+        with open(CONFIG_JSON, "r", encoding="utf-8") as file:
+            dict_config_json = json.load(file)
+            return dict_config_json
+    except FileNotFoundError:
+        create_config_json()
 
 def write_data_to_config_json(dict_config):
     with open(CONFIG_JSON, "w", encoding="utf-8") as file:
