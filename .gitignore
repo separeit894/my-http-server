@@ -3,3 +3,4 @@ uploads
 venv
 zip_archive
 config.json
+__pycache__
