@@ -18,14 +18,15 @@
 <br><hr>
 <form class="forms" action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" style="margin-bottom: 2%;" id="file" name="file" required>
-    <button type="submit">Отправить файл</button>
+    <button type="submit" class="buttonsFromForms">Отправить файл</button>
 </form>
 <form class="forms" action="/create-zip-archive" method="post">
-    <button id="create_zip_archive" type="button" onclick="get_zip_archive()"><a id="link_download_zip">Получить файлы (ZIP)</a></button>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <button id="IdCreateZipArchive" type="button" class="buttonsFromForms onclick="get_zip_archive()"><a id="link_download_zip">Получить файлы (ZIP)</a></button>
 </form>
 <form class="forms">
-    <button id="securityFile" title="Убирает возможность удалить файл" onclick="securityFile()">Защита файла</button>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <button id="IdSecurityFile" type="button" class="buttonsFromForms title="Убирает возможность удалить файл" onclick="securityFile()">Защита файла</button>
+</form>
+<form class="forms">
+    <button id="IdDeleteSecurityFile" type="button" class="buttonsFromForms title="Возвращает возможность удалить файл" onclick="deleteSecurityFile()">Убрать защиту файла</button>
 </form>
 {% endblock body %}

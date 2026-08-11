@@ -42,13 +42,13 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-VERSION = "0.0.9"
+VERSION = "0.1.0"
 
 
 def create_config_json():
     if not os.path.exists(CONFIG_JSON):
         try:
-            with open("config.json", "w", encoding="utf-8") as file:
+            with open(CONFIG_JSON, "w", encoding="utf-8") as file:
                 dict_config = {
                     "Security": [],
                     "Allowed Types": []
@@ -67,11 +67,18 @@ def create_config_json():
 
 def read_config_json():
     try:
-        with open(CONFIG_JSON, "r", encoding="utf-8") as file:
-            dict_config_json = json.load(file)
-            return dict_config_json
+        def read_file():
+            with open(CONFIG_JSON, "r", encoding="utf-8") as file:
+                dict_config_json = json.load(file)
+                return dict_config_json
+
+        return read_file()
     except FileNotFoundError:
         create_config_json()
+    finally:
+        dict_config_json = read_file()
+    return dict_config_json
+        
 
 def write_data_to_config_json(dict_config):
     with open(CONFIG_JSON, "w", encoding="utf-8") as file:
@@ -200,6 +207,25 @@ def security_file():
 
         return redirect("/")
 
+@app.route("/delete-security-file", methods=["POST"])
+def delete_security_file():
+    if request.method == "POST":
+        result = request.get_json()
+        if create_config_json():
+            dict_config_json = read_config_json()
+            security_file = dict_config_json["Security"]
+            for item in result:
+                if item in security_file:
+                    if item in security_file:
+                        security_file.remove(item)
+                        print(f"[ REMOVE ITEM IN SECURITY FILE LIST : {item} ]")
+                        
+            if dict_config_json != read_config_json():
+                write_data_to_config_json(dict_config_json)
+            else:
+                print("[ NOT WRITE DATA, THAT`S NOT NEW DATA]")
+
+            return redirect(url_for("index"))
     
 
 @app.errorhandler(404)

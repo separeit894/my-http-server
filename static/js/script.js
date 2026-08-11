@@ -1,4 +1,4 @@
-async function send_files(url, result) {
+async function send_data(url, result) {
     try {
         const response = await fetch(url, {
             method: "POST",
@@ -15,9 +15,9 @@ async function send_files(url, result) {
 }
 
 async function create_zip_archive() {
-    const result = check_checkbox()
-    const url = "/create-zip-archive"
-    send_files(url, result)
+    const result = check_checkbox();
+    const url = "/create-zip-archive";
+    send_data(url, result);
 }
 
 function check_checkbox() {
@@ -25,7 +25,7 @@ function check_checkbox() {
     const checkbox_class_elements = document.getElementsByClassName("files");
     for(i = 0; i< checkbox_class_elements.length; i++) {
         if (checkbox_class_elements[i]["checked"]) {
-            result.push(checkbox_class_elements[i]['name'])
+            result.push(checkbox_class_elements[i]['name']);
         }
     }
     
@@ -34,8 +34,8 @@ function check_checkbox() {
         window.location.href="/"
         return;
     } 
-    console.log("result: ", result)
-    return result
+    console.log("result: ", result);
+    return result;
 
 }
 
@@ -44,15 +44,27 @@ async function get_zip_archive() {
         window.location.href="/get-zip-archive"
     }, 
     2000
-    )
+    );
 }
 
 async function securityFile() {
-    const result = check_checkbox()
-    const url = "/security-file"
-    send_files(url, result)
+    const result = check_checkbox();
+    const url = "/security-file";
 
+    send_data(url, result);
+    
+    setTimeout(() => {
+        window.location.reload()
+    }, 1300);
 }
 
-document.getElementById("create_zip_archive").addEventListener('click', create_zip_archive);
-document.getElementById("securityFile").addEventListener('click', securityFile);
+async function deleteSecurityFile() {
+    const url = "/delete-security-file";
+    const result = check_checkbox();
+    send_data(url, result);
+    setTimeout(() => {window.location.reload()}, 1300);
+}
+
+document.getElementById("IdCreateZipArchive").addEventListener('click', create_zip_archive);
+document.getElementById("IdSecurityFile").addEventListener('click', securityFile);
+document.getElementById("IdDeleteSecurityFile").addEventListener('click', deleteSecurityFile);
