@@ -11,10 +11,15 @@ from flask import (
 )
 
 from zipfile import ZipFile
+from core import (
+    CONFIG_JSON,
+    create_config_json,
+    read_config_json,
+    write_data_to_config_json
+)
 
 import os
 import time
-import json
 
 
 app = Flask(__name__)
@@ -29,7 +34,7 @@ ZIP_ARCHIVE_DIR = "zip_archive"
 
 # Files
 ZIP_FILENAME = "files.zip"
-CONFIG_JSON = "config.json"
+
 
 # FULL PATH 
 FULL_PATH_ZIPFILE = os.path.join(ZIP_ARCHIVE_DIR, ZIP_FILENAME)
@@ -42,49 +47,9 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
-
-def create_config_json():
-    if not os.path.exists(CONFIG_JSON):
-        try:
-            with open(CONFIG_JSON, "w", encoding="utf-8") as file:
-                dict_config = {
-                    "Security": [],
-                    "Allowed Types": []
-                }
-                json.dump(dict_config, file, indent=4)
-                print(f"[ FILE CONFIG CREATE ] : {file.name}")
-
-                return True
-            
-        except json.JSONEncoder as error:
-            print(error)
-            return False
-    else:
-        print(f"[ FILE CONFIG EXISTS ] : {CONFIG_JSON}")
-        return True
-
-def read_config_json():
-    try:
-        def read_file():
-            with open(CONFIG_JSON, "r", encoding="utf-8") as file:
-                dict_config_json = json.load(file)
-                return dict_config_json
-
-        return read_file()
-    except FileNotFoundError:
-        create_config_json()
-    finally:
-        dict_config_json = read_file()
-    return dict_config_json
-        
-
-def write_data_to_config_json(dict_config):
-    with open(CONFIG_JSON, "w", encoding="utf-8") as file:
-        json.dump(dict_config, file, indent=4)
-        return True
-
+DATA_CONFIG = read_config_json()
 
 @app.route("/")
 def index():
@@ -93,7 +58,7 @@ def index():
     if os.path.exists(FULL_PATH_ZIPFILE):
         os.remove(FULL_PATH_ZIPFILE)
 
-    return render_template("index.html", data=data, version=f"version: {VERSION}", zipfile=ZIP_FILENAME, dict=read_config_json()["Security"])
+    return render_template("index.html", data=data, version=f"version: {VERSION}", zipfile=ZIP_FILENAME, dict=DATA_CONFIG["Security"])
 
 
 @app.route("/upload", methods=["POST", "GET"])
@@ -117,12 +82,10 @@ def get_file(file):
 def delete_file(filename):
     path = os.path.join(UPLOADS_DIR, filename)
 
-    dict_config_json = read_config_json()
-    security_list = dict_config_json["Security"]
+    security_list = DATA_CONFIG["Security"]
 
     if filename in security_list:
-        security_list.remove(filename)
-        print("[ REMOVE FILE FROM SECURITY LIST IN CONFIG ]")
+        print("[ NOT REMOVE FILE FROM SECURITY LIST IN CONFIG, THAT`S NOT DELETE FILE]")
         return redirect("/")
         
     else:
@@ -196,14 +159,17 @@ def security_file():
     if request.method == "POST":
         result = request.get_json()
         if create_config_json():
-            dict_config_json = read_config_json()
             for item in result:
-                if item in dict_config_json["Security"]:
+                if item in DATA_CONFIG["Security"]:
                     print(f"[ ITEM EXISTS IN LIST, THAT`S NOT APPEND IN LIST ] : {item}")
                 else:
                     print(f"[ ITEM APPEND IN LIST ] : {item}")
-                    dict_config_json["Security"].append(item)
-            write_data_to_config_json(dict_config_json)
+                    DATA_CONFIG["Security"].append(item)
+
+            if DATA_CONFIG != read_config_json():
+                write_data_to_config_json(DATA_CONFIG)
+            else:
+                print("[ NOT WRITE DATA, THAT`S NOT NEW DATA]")
 
         return redirect("/")
 
@@ -212,16 +178,14 @@ def delete_security_file():
     if request.method == "POST":
         result = request.get_json()
         if create_config_json():
-            dict_config_json = read_config_json()
-            security_file = dict_config_json["Security"]
+            security_file = DATA_CONFIG["Security"]
             for item in result:
                 if item in security_file:
-                    if item in security_file:
-                        security_file.remove(item)
-                        print(f"[ REMOVE ITEM IN SECURITY FILE LIST : {item} ]")
+                    security_file.remove(item)
+                    print(f"[ REMOVE ITEM IN SECURITY FILE LIST : {item} ]")
                         
-            if dict_config_json != read_config_json():
-                write_data_to_config_json(dict_config_json)
+            if DATA_CONFIG != read_config_json():
+                write_data_to_config_json(DATA_CONFIG)
             else:
                 print("[ NOT WRITE DATA, THAT`S NOT NEW DATA]")
 
