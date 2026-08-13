@@ -1,5 +1,7 @@
 # my-http-server
 
+![PythonAndHttpSvg](assets/HttpAndPython.svg)
+
 Локальный HTTP сервер для того, чтобы загружать файлы
 
 ## Содержание
