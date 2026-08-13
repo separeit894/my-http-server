@@ -47,7 +47,7 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 
 DATA_CONFIG = read_config_json()
 
@@ -140,6 +140,7 @@ def get_zip_archive():
             os.remove(FULL_PATH_ZIPFILE)
 
         return response
+    
     print(f"NOW : {start_create_zip}")
     if start_create_zip:
         while not created_zip:

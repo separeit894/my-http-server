@@ -23,7 +23,7 @@ async function create_zip_archive() {
 function check_checkbox() {
     result = []
     const checkbox_class_elements = document.getElementsByClassName("files");
-    for(i = 0; i< checkbox_class_elements.length; i++) {
+    for(i = 0; i < checkbox_class_elements.length; i++) {
         if (checkbox_class_elements[i]["checked"]) {
             result.push(checkbox_class_elements[i]['name']);
         }
@@ -41,7 +41,7 @@ function check_checkbox() {
 
 async function get_zip_archive() {
     setTimeout(() => {
-        window.location.href="/get-zip-archive"
+        window.location.href="/get-zip-archive";
     }, 
     2000
     );
