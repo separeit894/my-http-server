@@ -20,6 +20,8 @@ from core import (
 
 import os
 import time
+import json
+import ast
 
 
 app = Flask(__name__)
@@ -47,7 +49,7 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-VERSION = "0.1.2"
+VERSION = "0.1.3"
 
 DATA_CONFIG = read_config_json()
 
@@ -191,6 +193,20 @@ def delete_security_file():
                 print("[ NOT WRITE DATA, THAT`S NOT NEW DATA]")
 
             return redirect(url_for("index"))
+
+@app.route("/config")
+def edit_config():
+    return render_template("edit_config.html", data=DATA_CONFIG)
+
+@app.route("/save-config", methods=["POST"])
+def save_config():
+    global DATA_CONFIG
+    if request.method == "POST":
+        raw_data = request.form.get("data_config")
+        new_data = ast.literal_eval(raw_data)
+        DATA_CONFIG = new_data
+        write_data_to_config_json(DATA_CONFIG)
+        return redirect("/")
     
 
 @app.errorhandler(404)

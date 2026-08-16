@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}
+Настройки
+{% endblock %}
+
+{% block body %}
+<form action="/save-config" method="post">
+    <textarea cols="100" rows="10" name="data_config" style="font-size: 1.5em">{{ data }}</textarea><br>
+    <button type="submit" class="buttonsFromForms">Сохранить</button>
+    <button type="button" class="buttonsFromForms" onclick="location.href='/'">На главную</button>
+</form>
+{% endblock %}

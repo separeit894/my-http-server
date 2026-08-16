@@ -42,5 +42,5 @@ def read_config_json():
 
 def write_data_to_config_json(dict_config):
     with open(CONFIG_JSON, "w", encoding="utf-8") as file:
-        json.dump(dict_config, file, indent=4)
+        json.dump(dict_config, file, ensure_ascii=False, indent=4)
         return True
