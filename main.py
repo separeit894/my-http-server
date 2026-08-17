@@ -49,7 +49,7 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-VERSION = "0.1.3"
+VERSION = "0.1.4"
 
 DATA_CONFIG = read_config_json()
 
@@ -66,9 +66,13 @@ def index():
 @app.route("/upload", methods=["POST", "GET"])
 def upload_file():
     if request.method == "POST":
-        file = request.files.get("file")
-        path = os.path.join(UPLOADS_DIR, file.filename)
-        file.save(path)
+        file = request.files.get("file")            
+
+        allowed = tuple(DATA_CONFIG["Allowed Types"])
+        if file.filename.endswith(allowed) or not DATA_CONFIG["Allowed Types"]:
+            path = os.path.join(UPLOADS_DIR, file.filename)
+            file.save(path)
+                
 
     return redirect("/")
 

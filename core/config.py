@@ -7,20 +7,16 @@ CONFIG_JSON = "config.json"
 def create_config_json():
     
     if not os.path.exists(CONFIG_JSON):
-        try:
-            with open(CONFIG_JSON, "w", encoding="utf-8") as file:
-                dict_config = {
-                    "Security": [],
-                    "Allowed Types": []
-                }
-                json.dump(dict_config, file, indent=4)
-                print(f"[ FILE CONFIG CREATE ] : {file.name}")
+        with open(CONFIG_JSON, "w", encoding="utf-8") as file:
+            dict_config = {
+                "Security": [],
+                "Allowed Types": []
+            }
+            json.dump(dict_config, file, indent=4)
+            print(f"[ FILE CONFIG CREATE ] : {file.name}")
 
-                return True
-            
-        except json.JSONEncoder as error:
-            print(error)
-            return False
+            return True    
+        
     else:
         print(f"[ FILE CONFIG EXISTS ] : {CONFIG_JSON}")
         return True
