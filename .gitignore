@@ -4,3 +4,4 @@ venv
 zip_archive
 config.json
 __pycache__
+description_update.txt
