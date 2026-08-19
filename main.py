@@ -69,7 +69,7 @@ def upload_file():
         file = request.files.get("file")            
 
         allowed = tuple(DATA_CONFIG["Allowed Types"])
-        if file.filename.endswith(allowed) or not DATA_CONFIG["Allowed Types"]:
+        if file.filename.lower().endswith(allowed) or not DATA_CONFIG["Allowed Types"]:
             path = os.path.join(UPLOADS_DIR, file.filename)
             file.save(path)
                 
@@ -207,8 +207,13 @@ def save_config():
     global DATA_CONFIG
     if request.method == "POST":
         raw_data = request.form.get("data_config")
-        new_data = ast.literal_eval(raw_data)
-        DATA_CONFIG = new_data
+        not_formatted_new_data = ast.literal_eval(raw_data)
+
+        formatted_new_data_allowed_type = [item.lower() for item in not_formatted_new_data["Allowed Types"]]
+        not_formatted_new_data["Allowed Types"] = formatted_new_data_allowed_type
+
+        format_new_data = not_formatted_new_data
+        DATA_CONFIG = format_new_data
         write_data_to_config_json(DATA_CONFIG)
         return redirect("/")
     
