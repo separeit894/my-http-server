@@ -7,18 +7,18 @@
 {% block body %}
 <h1 id="text-list-files">Список файлов</h1><hr>
 {% for el in data %}
-    <div class="file">
-        <input type="checkbox" name="{{ el }}" class="files">
-        <a href="get_file/{{ el }}">{{ el }}</a>
-        {% if not el in dict %}
-            <a href="/delete/{{ el }}" class="delete-button" >Удалить</a>
-        {% endif %}
-    </div>
+<div class="file">
+    <input type="checkbox" name="{{ el }}" class="files">
+    <a href="get_file/{{ el }}">{{ el }}</a>
+    {% if not el in dict %}
+    <a href="/delete/{{ el }}" class="delete-button" >Удалить</a>
+    {% endif %}
+</div>
 {% endfor %}
 <br><hr>
 <form class="forms" action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" style="margin-bottom: 2%;" id="file" name="file" required>
-    <button type="submit" class="buttonsFromForms">Отправить файл</button>
+    <input type="file" style="margin-bottom: 2%;" id="file" name="file" onchange="if(this.value) this.form.submit()" required>
+    <!-- <button type="submit" class="buttonsFromForms">Отправить файл</button> -->
 </form>
 <form class="forms" action="/create-zip-archive" method="post">
     <button id="IdCreateZipArchive" type="button" class="buttonsFromForms" onclick="get_zip_archive()"><a id="link_download_zip">Получить файлы (ZIP)</a></button>

@@ -1,3 +1,6 @@
+// if true, to append log alert
+const verbose = true;
+
 async function send_data(url, result) {
     try {
         const response = await fetch(url, {
@@ -34,7 +37,7 @@ function check_checkbox() {
         window.location.href="/"
         return;
     } 
-    console.log("result: ", result);
+    // console.log("result: ", result);
     return result;
 
 }
@@ -42,6 +45,7 @@ function check_checkbox() {
 async function get_zip_archive() {
     setTimeout(() => {
         window.location.href="/get-zip-archive";
+        if (verbose) alert("ZIP ARCHIVE CREATE");
     }, 
     2000
     );
@@ -52,9 +56,10 @@ async function securityFile() {
     const url = "/security-file";
 
     send_data(url, result);
-    
+
     setTimeout(() => {
-        window.location.reload()
+        window.location.reload();
+        if (verbose) alert("SECURITY: " + result)
     }, 1300);
 }
 
@@ -62,7 +67,11 @@ async function deleteSecurityFile() {
     const url = "/delete-security-file";
     const result = check_checkbox();
     send_data(url, result);
-    setTimeout(() => {window.location.reload()}, 1300);
+    setTimeout(() => {
+        window.location.reload(); 
+        if (verbose) alert("DELETE SECURITY: " + result)
+    }, 
+    1300);
 }
 
 document.getElementById("IdCreateZipArchive").addEventListener('click', create_zip_archive);

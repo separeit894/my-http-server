@@ -49,7 +49,7 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-VERSION = "0.1.4"
+VERSION = "0.1.6"
 
 DATA_CONFIG = read_config_json()
 
@@ -73,7 +73,6 @@ def upload_file():
             path = os.path.join(UPLOADS_DIR, file.filename)
             file.save(path)
                 
-
     return redirect("/")
 
 
