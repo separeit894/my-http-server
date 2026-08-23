@@ -1,5 +1,6 @@
 // if true, to append log alert
 const verbose = true;
+var search_list_files;
 
 async function send_data(url, result) {
     try {
@@ -11,6 +12,8 @@ async function send_data(url, result) {
             },
         });
         const json = await response.json();
+        if (url == "/search-file") search_list_files = JSON.stringify(json);
+
         console.log("Успех:", JSON.stringify(json));
     } catch (error) {
         console.error("Ошибка:", error);
@@ -31,12 +34,12 @@ function check_checkbox() {
             result.push(checkbox_class_elements[i]['name']);
         }
     }
-    
+
     if (result.length === 0) {
-        alert("Выберите хотя бы один чекбокс")
-        window.location.href="/"
+        alert("Выберите хотя бы один чекбокс");
+        window.location.href="/";
         return;
-    } 
+    }
     // console.log("result: ", result);
     return result;
 
@@ -54,7 +57,6 @@ async function get_zip_archive() {
 async function securityFile() {
     const result = check_checkbox();
     const url = "/security-file";
-
     send_data(url, result);
 
     setTimeout(() => {
@@ -72,6 +74,27 @@ async function deleteSecurityFile() {
         if (verbose) alert("DELETE SECURITY: " + result)
     }, 
     1300);
+}
+
+async function SearchFileInList(str) {
+    if(str == "") {
+        location.href="/";
+    }
+    
+    const url = "/search-file";
+    send_data(url, str);
+
+    const quantity_files = Array.from(document.getElementsByClassName("file"));
+    let obj = Array.from(JSON.parse(search_list_files)['find_files']);
+
+    //const result = quantity_files.filter(file=>obj.includes(file.name.trim()))
+    //console.log("РЕЗУЛЬТАТ ВЫПОЛНЕНИЯ ФУНКЦИИ: ", result)
+    for(i = 0; i < quantity_files.length; i++) {
+        if(obj.some(item => item == quantity_files[i].querySelector('.files').name)) {} 
+        else {
+            quantity_files[i].remove();
+        }
+    }
 }
 
 document.getElementById("IdCreateZipArchive").addEventListener('click', create_zip_archive);

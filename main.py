@@ -49,18 +49,19 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-VERSION = "0.1.6"
+VERSION = "0.1.7"
 
 DATA_CONFIG = read_config_json()
 
+
 @app.route("/")
 def index():
-    data = os.listdir(UPLOADS_DIR)
-
+    global files_dir
+    files_dir = os.listdir(UPLOADS_DIR)
     if os.path.exists(FULL_PATH_ZIPFILE):
         os.remove(FULL_PATH_ZIPFILE)
 
-    return render_template("index.html", data=data, version=f"version: {VERSION}", zipfile=ZIP_FILENAME, dict=DATA_CONFIG["Security"])
+    return render_template("index.html", files_dir=files_dir, version=f"version: {VERSION}", zipfile=ZIP_FILENAME, dict=DATA_CONFIG["Security"])
 
 
 @app.route("/upload", methods=["POST", "GET"])
@@ -215,7 +216,24 @@ def save_config():
         DATA_CONFIG = format_new_data
         write_data_to_config_json(DATA_CONFIG)
         return redirect("/")
-    
+
+@app.route("/search-file", methods=["POST"])
+def search_file():
+    if request.method == "POST":
+        response = request.get_json()
+        result_list_find_files = []
+        for item in files_dir:
+            if response in item:
+                result_list_find_files.append(item)
+
+        return jsonify(
+            {
+                'status': 'success',
+                'find_files': result_list_find_files
+            }
+        )
+
+
 
 @app.errorhandler(404)
 def error_page(error):

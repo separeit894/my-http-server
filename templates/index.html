@@ -5,8 +5,10 @@
 {% endblock title %}
 
 {% block body %}
-<h1 id="text-list-files">Список файлов</h1><hr>
-{% for el in data %}
+<h1 id="text-list-files">Список файлов</h1>
+<input type="text" placeholder="Enter name file: " id="EnterSearchFile" oninput="SearchFileInList(this.value)">
+<hr>
+{% for el in files_dir %}
 <div class="file">
     <input type="checkbox" name="{{ el }}" class="files">
     <a href="get_file/{{ el }}">{{ el }}</a>
