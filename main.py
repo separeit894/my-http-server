@@ -49,7 +49,7 @@ created_zip = False
 os.makedirs(ZIP_ARCHIVE_DIR, exist_ok=True)
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
-VERSION = "0.1.7"
+VERSION = "0.1.8"
 
 DATA_CONFIG = read_config_json()
 

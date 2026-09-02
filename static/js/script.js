@@ -77,22 +77,36 @@ async function deleteSecurityFile() {
 }
 
 async function SearchFileInList(str) {
-    if(str == "") {
-        location.href="/";
+    const quantity_files = Array.from(document.getElementsByClassName("file"));
+    if(str == "") 
+    {
+        console.log("User enter empty str...");
+        for(i = 0; i < quantity_files.length; i++) {
+            var iter = quantity_files[i];
+            if(iter.hidden) {
+                iter.hidden = false;
+            }
+        }
+        return;
     }
     
     const url = "/search-file";
     send_data(url, str);
+    //console.log("User entered: ", str)
 
-    const quantity_files = Array.from(document.getElementsByClassName("file"));
-    let obj = Array.from(JSON.parse(search_list_files)['find_files']);
+    var find_files = JSON.parse(search_list_files)['find_files'];
+    let obj = Array.from(find_files);
 
-    //const result = quantity_files.filter(file=>obj.includes(file.name.trim()))
-    //console.log("РЕЗУЛЬТАТ ВЫПОЛНЕНИЯ ФУНКЦИИ: ", result)
     for(i = 0; i < quantity_files.length; i++) {
-        if(obj.some(item => item == quantity_files[i].querySelector('.files').name)) {} 
-        else {
-            quantity_files[i].remove();
+        var iter_index = quantity_files[i];
+        var iter = quantity_files[i].querySelector('.files').name;
+
+        if(obj.some(item => item.includes(iter))) 
+        {
+            iter_index.hidden = false;
+        } else 
+        {
+            iter_index.hidden = true;
         }
     }
 }
